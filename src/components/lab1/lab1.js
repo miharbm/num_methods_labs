@@ -6,20 +6,39 @@ import {useEffect, useState} from "react";
 const Lab1 = () => {
     const dispatch = useDispatch();
 
-    const data = []
+    // const data = []
     const [n, setN] = useState(10);
-    //     const n = 6 ;
+    const [xType, setXType] = useState("linear");
     const a = 0;
     const b = 10;
     const step = (b - a) / n;
+    const epsilon = 0.0001;
 
+    let xArr = [];
+    switch (xType) {
+        case "linear":
+            for (let x = 0; x < b + epsilon; x += step) {
+                xArr.push(x);
+            }
+            break;
+        case "cos":
+            for (let k = 0; k < n + 1 ; k++) {
+                const t = (b - a) / 2
+                const x = Math.cos(Math.PI * (k + 1) * .5 / n ) * t + t ;
+                xArr.push(x)
+            }
+            break;
 
-
-    for (let x = 0; x < b +  0.0001; x += step) {
-        console.log(x)
-        const y = Math.sin(x - 2) ** 5 + Math.cos(x * 0.1) ** 7;
-        data.push({x,y});
     }
+
+    const data = xArr.map((x) => ({
+        x,
+        y: Math.sin(x - 2) ** 5 + Math.cos(x * 0.1) ** 7,
+    }))
+    // for (let x = 0; x < b + epsilon; x += step) {
+    //     const y = Math.sin(x - 2) ** 5 + Math.cos(x * 0.1) ** 7;
+    //     data.push({x,y});
+    // }
 
     const product = (xArr, x, i) => {
         let result = 1;
@@ -32,7 +51,7 @@ const Lab1 = () => {
         return result;
     }
 
-    const xArr = data.map(item => item.x);
+    // const xArr = data.map(item => item.x);
 
     const lagrangePolynomial = (x) => {
         let result = 0;
@@ -43,12 +62,12 @@ const Lab1 = () => {
     }
 
     const dataOut = [];
-    for (let x = a; x < b + 0.001; x += 0.1) {
+    for (let x = a; x < b + epsilon; x += 0.1) {
         dataOut.push({x, y: lagrangePolynomial(x)})
     }
 
     let data3 =[]
-    for (let x = a; x < b + 0.00001; x += .01) {
+    for (let x = a; x < b + epsilon; x += .01) {
         const y = Math.sin(x - 2) ** 5 + Math.cos(x * 0.1) ** 7
         data3.push({x,y})
     }
@@ -62,10 +81,10 @@ const Lab1 = () => {
 
     useEffect(() => {
         dispatch(initialDataSet(data));
-    }, [data]);
+    }, [data, xType]);
     useEffect(() => {
         dispatch(dataToChartSet(dataOut));
-    }, [dataOut]);
+    }, [dataOut, xType]);
 
 
 
@@ -73,6 +92,14 @@ const Lab1 = () => {
         <>
             <h2>Lab1</h2>
             {Formula()}
+            <div className="form-check" onChange={e => setXType(e.target.id)}>
+                <input className="form-check-input" type="radio" name="flexRadioDefault" id="linear" checked/>
+                <label className="form-check-label" htmlFor="flexRadioDefault1" >Linear</label>
+            </div>
+            <div className="form-check" onChange={e => setXType(e.target.id)}>
+                <input className="form-check-input" type="radio" name="flexRadioDefault" id="cos"/>
+                <label className="form-check-label" htmlFor="flexRadioDefault2">Cos</label>
+            </div>
             <label htmlFor={"valueN"}>n = </label>
             <input name={"valueN"} value={n} type="number" onChange={e => setN(+e.target.value)}/>
         </>
