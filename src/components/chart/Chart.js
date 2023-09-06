@@ -1,9 +1,10 @@
-import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import {ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend} from 'recharts';
 import {useSelector} from "react-redux";
 
 const Chart = () => {
 
-    const data = useSelector(state => state.chart.dataToChart);
+    const data2 = useSelector(state => state.chart.dataToChart);
+    const data1 = useSelector(state => state.chart.initialData);
 
 
     return (
@@ -20,7 +21,10 @@ const Chart = () => {
                 <XAxis type="number" dataKey="x" name=""  />
                 <YAxis type="number" dataKey="y" name=""  />
                 <Tooltip cursor={{ strokeDasharray: '3 3' }} />
-                <Scatter name="A school" data={data} fill="#8884d8" />
+                <Legend/>
+                <Scatter name="Inter" data={data2} fill="#82ca9d" />
+                <Scatter name="Initial data" data={data1} fill="#8884d8" r={20}/>
+
             </ScatterChart>
         </ResponsiveContainer>
     );

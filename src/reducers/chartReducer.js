@@ -1,14 +1,17 @@
 import {createReducer} from "@reduxjs/toolkit";
-import {dataToChartSet} from "../actions";
+import {dataToChartSet, initialDataSet} from "../actions";
 
 const initialState = {
     dataToChart: [],
+    initialData: [],
 }
 
 const chart = createReducer(initialState, {
         [dataToChartSet]: (state, action) => {
-                console.log("action.payload: ",action.payload)
                 state.dataToChart = action.payload;
+            },
+        [initialDataSet]: (state, action) => {
+                state.initialData = action.payload;
             },
     }, [],
     state => state
