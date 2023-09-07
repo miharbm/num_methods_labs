@@ -6,7 +6,6 @@ import {useEffect, useState} from "react";
 const Lab1 = () => {
     const dispatch = useDispatch();
 
-    // const data = []
     const [n, setN] = useState(10);
     const [xType, setXType] = useState("linear");
     const a = 0;
