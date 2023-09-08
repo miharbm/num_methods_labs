@@ -1,5 +1,5 @@
 import {useDispatch} from "react-redux";
-import {dataToChartSet, initialDataSet} from "../../actions";
+import {dataToChartSet, deviationSet, initialDataSet} from "../../actions";
 import {useEffect, useState} from "react";
 import {Form} from "react-bootstrap";
 
@@ -25,7 +25,7 @@ const Lab1 = () => {
             break;
         case "cos":
             for (let k = 0; k < n; k++) {
-                const t = (b - a) / 2;
+                const t = (a + b) / 2;
                 const x = Math.cos(Math.PI * (2 * k + 1) / (2 * n))  * t + t ;
                 xArr.push(x)
             }
@@ -33,9 +33,13 @@ const Lab1 = () => {
 
     }
 
+    const initialFunc = (x) => {
+        return Math.sin(x - 2) ** 5 + Math.cos(x * 0.1) ** 7;
+    }
+
     const initialPoints = xArr.map((x) => ({
         x,
-        y: Math.sin(x - 2) ** 5 + Math.cos(x * 0.1) ** 7,
+        y: initialFunc(x),
     }))
 
     const product = (x, i) => {
@@ -65,11 +69,16 @@ const Lab1 = () => {
         })
     }
 
-    let initialFunc = []
+    let initialFuncPoints = []
     for (let x = a; x < b + epsilon; x += .01) {
         const y = Math.sin(x - 2) ** 5 + Math.cos(x * 0.1) ** 7
-        initialFunc.push({x,y})
+        initialFuncPoints.push({x,y})
     }
+
+    const deviation = interpolated.map(({x, y}) => ({
+        x,
+        y: y - initialFunc(x),
+    }));
 
 
 
@@ -79,6 +88,9 @@ const Lab1 = () => {
     useEffect(() => {
         dispatch(dataToChartSet(interpolated));
     }, [interpolated, xType]);
+    useEffect(() => {
+        dispatch(deviationSet(deviation));
+    }, [deviation, xType]);
 
     const onXTypeChange = (e) => {
         setXType(e.target.id)
@@ -99,7 +111,7 @@ const Lab1 = () => {
     }
 
     return (
-        <>
+        <div style={{position: "sticky", top: "15px"}}>
             <h2>Lab1</h2>
             <hr style={{marginBottom: "40px"}}/>
             {Formula()}
@@ -113,7 +125,7 @@ const Lab1 = () => {
                    style={{textAlign: "center", width: "50px", marginTop: "20px"}}
                    onChange={e => setN(+e.target.value)}
             />
-        </>
+        </div>
     )
 }
 
