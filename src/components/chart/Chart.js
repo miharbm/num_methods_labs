@@ -22,8 +22,8 @@ const Chart = () => {
                 <YAxis type="number" dataKey="y" name=""  />
                 <Tooltip cursor={{ strokeDasharray: '3 3' }} />
                 <Legend/>
-                <Scatter name="Inter" data={data2} fill="#82ca9d" />
-                <Scatter name="Initial data" data={data1} fill="#8884d8" r={20}/>
+                <Scatter name="Interpolated" data={data2} fill="#82ca9d" />
+                <Scatter name="Initial data" data={data1} fill="#8884d8"/>
 
             </ScatterChart>
         </ResponsiveContainer>

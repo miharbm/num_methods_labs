@@ -1,6 +1,7 @@
 import {useDispatch} from "react-redux";
 import {dataToChartSet, initialDataSet} from "../../actions";
 import {useEffect, useState} from "react";
+import {Form} from "react-bootstrap";
 
 
 const Lab1 = () => {
@@ -8,40 +9,38 @@ const Lab1 = () => {
 
     const [n, setN] = useState(10);
     const [xType, setXType] = useState("linear");
+    const xTypes = ["linear", "cos"];
     const a = 0;
     const b = 10;
-    const step = (b - a) / n;
+    const step = (b - a) / (n - 1);
+    const lagrangeStep = step / 4;
     const epsilon = 0.0001;
 
     let xArr = [];
     switch (xType) {
         case "linear":
-            for (let x = 0; x < b + epsilon; x += step) {
-                xArr.push(x);
+            for (let k = 0; k < n; k++) {
+                xArr.push(k * step);
             }
             break;
         case "cos":
-            for (let k = 0; k < n + 1 ; k++) {
-                const t = (b - a) / 2
-                const x = Math.cos(Math.PI * (k + 1) * .5 / n ) * t + t ;
+            for (let k = 0; k < n; k++) {
+                const t = (b - a) / 2;
+                const x = Math.cos(Math.PI * (2 * k + 1) / (2 * n))  * t + t ;
                 xArr.push(x)
             }
             break;
 
     }
 
-    const data = xArr.map((x) => ({
+    const initialPoints = xArr.map((x) => ({
         x,
         y: Math.sin(x - 2) ** 5 + Math.cos(x * 0.1) ** 7,
     }))
-    // for (let x = 0; x < b + epsilon; x += step) {
-    //     const y = Math.sin(x - 2) ** 5 + Math.cos(x * 0.1) ** 7;
-    //     data.push({x,y});
-    // }
 
-    const product = (xArr, x, i) => {
+    const product = (x, i) => {
         let result = 1;
-        for (let j = 0; j <= n; j++ ) {
+        for (let j = 0; j < n; j++ ) {
             if (j === i) {
                 continue;
             }
@@ -50,64 +49,79 @@ const Lab1 = () => {
         return result;
     }
 
-    // const xArr = data.map(item => item.x);
-
     const lagrangePolynomial = (x) => {
         let result = 0;
-        for (let i = 0; i < n + 1; i++ ) {
-            result += data[i].y * product(xArr, x, i) / product(xArr, data[i].x, i)
+        for (let i = 0; i < n; i++ ) {
+            result += initialPoints[i].y * product(x, i) / product(initialPoints[i].x, i)
         }
         return result;
     }
 
-    const dataOut = [];
-    for (let x = a; x < b + epsilon; x += 0.1) {
-        dataOut.push({x, y: lagrangePolynomial(x)})
+    const interpolated = [];
+    for (let x = a; x < b + epsilon; x += lagrangeStep) {
+        interpolated.push({
+            x,
+            y: lagrangePolynomial(x)
+        })
     }
 
-    let data3 =[]
+    let initialFunc = []
     for (let x = a; x < b + epsilon; x += .01) {
         const y = Math.sin(x - 2) ** 5 + Math.cos(x * 0.1) ** 7
-        data3.push({x,y})
+        initialFunc.push({x,y})
     }
 
 
-    // console.log(data[0])
-    // console.log(dataOut[0])
-    // console.log(data.at(-1))
-    // console.log(dataOut.at(-1))
-
 
     useEffect(() => {
-        dispatch(initialDataSet(data));
-    }, [data, xType]);
+        dispatch(initialDataSet(initialPoints));
+    }, [initialPoints, xType]);
     useEffect(() => {
-        dispatch(dataToChartSet(dataOut));
-    }, [dataOut, xType]);
+        dispatch(dataToChartSet(interpolated));
+    }, [interpolated, xType]);
 
+    const onXTypeChange = (e) => {
+        setXType(e.target.id)
+    }
 
+    const radioXType = () => {
+        return xTypes.map(type => {
+            return <Form.Check
+                style={{marginRight: "20px"}}
+                key={type}
+                type="radio"
+                label={type}
+                id={type}
+                onChange={onXTypeChange}
+                checked={xType === type}
+            />
+        })
+    }
 
     return (
         <>
             <h2>Lab1</h2>
+            <hr style={{marginBottom: "40px"}}/>
             {Formula()}
-            <div className="form-check" onChange={e => setXType(e.target.id)}>
-                <input className="form-check-input" type="radio" name="flexRadioDefault" id="linear" checked/>
-                <label className="form-check-label" htmlFor="flexRadioDefault1" >Linear</label>
-            </div>
-            <div className="form-check" onChange={e => setXType(e.target.id)}>
-                <input className="form-check-input" type="radio" name="flexRadioDefault" id="cos"/>
-                <label className="form-check-label" htmlFor="flexRadioDefault2">Cos</label>
-            </div>
-            <label htmlFor={"valueN"}>n = </label>
-            <input name={"valueN"} value={n} type="number" onChange={e => setN(+e.target.value)}/>
+            <Form.Group style={{display: "flex", marginTop: "20px"}}>
+                {
+                    radioXType()
+                }
+            </Form.Group>
+            <label htmlFor={"valueN"} style={{fontSize: "20px", marginRight: "10px"}}>n = </label>
+            <input name={"valueN"} value={n} type="number"
+                   style={{textAlign: "center", width: "50px", marginTop: "20px"}}
+                   onChange={e => setN(+e.target.value)}
+            />
         </>
     )
 }
 
+
+
 const Formula = () => {
     return (
-            <math display="block" className="tml-display" style={{display: "block"}}>
+            <math display="block" className="tml-display" style={{display: "block", fontSize: "20px"}}>
             <mrow>
                 <mi>f</mi>
                 <mo form="prefix" stretchy="false">(</mo>
