@@ -77,7 +77,7 @@ const Lab1 = () => {
 
     const deviation = interpolated.map(({x, y}) => ({
         x,
-        y: y - initialFunc(x),
+        y: Math.abs(y - initialFunc(x)),
     }));
 
 
