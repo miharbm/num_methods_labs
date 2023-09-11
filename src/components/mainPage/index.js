@@ -1,6 +1,7 @@
 import {useParams} from "react-router-dom";
 import Lab1 from "../lab1/lab1";
-import Chart from "../chart/Chart";
+import PlotlyChart from "../chart/plotlyChart";
+import RechartsChart from "../chart/RechartsChart";
 
 const MainPage = () => {
 
@@ -21,7 +22,8 @@ const MainPage = () => {
                 {selectedLab()}
             </div>
             <div className={"col-8"}>
-                <Chart/>
+                <PlotlyChart/>
+                <RechartsChart/>
             </div>
         </div>
 

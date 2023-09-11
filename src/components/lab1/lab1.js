@@ -1,5 +1,5 @@
 import {useDispatch} from "react-redux";
-import {dataToChartSet, deviationSet, initialDataSet} from "../../actions";
+import {data1Set, data2Set, data3Set, data4Set, dataToChartSet, deviationSet, initialDataSet} from "../../actions";
 import {useEffect, useState} from "react";
 import {Form} from "react-bootstrap";
 
@@ -18,6 +18,7 @@ const Lab1 = () => {
 
     let xArr = [];
     switch (xType) {
+        default:
         case "linear":
             for (let k = 0; k < n; k++) {
                 xArr.push(k * step);
@@ -83,13 +84,16 @@ const Lab1 = () => {
 
 
     useEffect(() => {
-        dispatch(initialDataSet(initialPoints));
+        dispatch(data2Set(initialFuncPoints));
     }, [initialPoints, xType]);
     useEffect(() => {
-        dispatch(dataToChartSet(interpolated));
+        dispatch(data1Set(interpolated));
     }, [interpolated, xType]);
     useEffect(() => {
-        dispatch(deviationSet(deviation));
+        dispatch(data3Set(deviation));
+    }, [deviation, xType]);
+    useEffect(() => {
+        dispatch(data4Set(initialPoints));
     }, [deviation, xType]);
 
     const onXTypeChange = (e) => {
@@ -110,6 +114,7 @@ const Lab1 = () => {
         })
     }
 
+    document.title = "Lab 1";
     return (
         <div style={{position: "sticky", top: "15px"}}>
             <h2>Lab1</h2>

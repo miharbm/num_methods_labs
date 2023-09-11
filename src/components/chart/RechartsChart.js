@@ -1,12 +1,11 @@
 import {ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend} from 'recharts';
 import {useSelector} from "react-redux";
 
-const Chart = () => {
+const RechartsChart = () => {
 
-    const data2 = useSelector(state => state.chart.dataToChart);
-    const data1 = useSelector(state => state.chart.initialData);
-    const deviation = useSelector(state => state.chart.deviation)
-    console.log(deviation)
+    const data2 = useSelector(state => state.chart.data1);
+    const data1 = useSelector(state => state.chart.data2);
+    const deviation = useSelector(state => state.chart.data3);
 
 
     return (
@@ -25,8 +24,7 @@ const Chart = () => {
                     <YAxis type="number" dataKey="y" name=""  />
                     <Tooltip cursor={{ strokeDasharray: '3 3' }} />
                     <Legend/>
-                    <Scatter name="Interpolated" data={data2} fill="#82ca9d" />
-                    <Scatter name="Initial data" data={data1} fill="#8884d8"/>
+                    <Scatter name="deviation error" data={deviation} fill="#82ca9d" />
 
                 </ScatterChart>
             </ResponsiveContainer>
@@ -44,13 +42,15 @@ const Chart = () => {
                     <YAxis type="number" dataKey="y" name=""  />
                     <Tooltip cursor={{ strokeDasharray: '3 3' }} />
                     <Legend/>
-                    <Scatter name="deviation error" data={deviation} fill="#82ca9d" />
+                    <Scatter name="Initial data" data={data1} fill="#8884d8"/>
+                    <Scatter name="Interpolated" data={data2} fill="#82ca9d" />
 
                 </ScatterChart>
             </ResponsiveContainer>
+
         </>
     );
 
 };
 
-export default Chart;
+export default RechartsChart;
