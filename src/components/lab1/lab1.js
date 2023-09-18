@@ -1,5 +1,5 @@
 import {useDispatch} from "react-redux";
-import {data1Set, data2Set, data3Set, data4Set, dataToChartSet, deviationSet, initialDataSet} from "../../actions";
+import {data1Set, data2Set, data3Set, data4Set} from "../../actions";
 import {useEffect, useState} from "react";
 import {Form} from "react-bootstrap";
 
@@ -8,28 +8,42 @@ const Lab1 = () => {
     const dispatch = useDispatch();
 
     const [n, setN] = useState(10);
+    const [n1, setN1] = useState(n + 1);
     const [xType, setXType] = useState("linear");
     const xTypes = ["linear", "cos"];
     const a = 0;
     const b = 10;
-    const step = (b - a) / (n - 1);
-    const lagrangeStep = step / 4;
+    const lagrangeStep = (b - a) / n;
     const epsilon = 0.0001;
 
+    useEffect(() => {
+        setN1(n + 1);
+    }, [n]);
+
     let xArr = [];
+    let xArrInter = [];
     switch (xType) {
         default:
         case "linear":
-            for (let k = 0; k < n; k++) {
-                xArr.push(k * step);
+            for (let k = 0; k < n1; k++) {
+                xArr.push(k * lagrangeStep);
             }
+            for (let i = 0; i < xArr.length - 1; i++) {
+                xArrInter.push(xArr[i] + lagrangeStep / 4)
+            }
+
             break;
         case "cos":
-            for (let k = 0; k < n; k++) {
-                const t = (a + b) / 2;
-                const x = Math.cos(Math.PI * (2 * k + 1) / (2 * n))  * t + t ;
+            for (let k = 0; k < n1; k++) {
+                const x = Math.cos(Math.PI * (2 * k + 1) / (2 * n1))  * (b - a) / 2 + (a + b) / 2 ;
                 xArr.push(x)
             }
+
+            for (let i = 0; i < xArr.length - 1; i++) {
+                let s = (xArr[i + 1] - xArr[i]) / 4;
+                xArrInter.push(xArr[i] + 3 * s);
+            }
+
             break;
 
     }
@@ -45,7 +59,7 @@ const Lab1 = () => {
 
     const product = (x, i) => {
         let result = 1;
-        for (let j = 0; j < n; j++ ) {
+        for (let j = 0; j < n1; j++ ) {
             if (j === i) {
                 continue;
             }
@@ -56,23 +70,20 @@ const Lab1 = () => {
 
     const lagrangePolynomial = (x) => {
         let result = 0;
-        for (let i = 0; i < n; i++ ) {
+        for (let i = 0; i < n1; i++ ) {
             result += initialPoints[i].y * product(x, i) / product(initialPoints[i].x, i)
         }
         return result;
     }
 
-    const interpolated = [];
-    for (let x = a; x < b + epsilon; x += lagrangeStep) {
-        interpolated.push({
-            x,
-            y: lagrangePolynomial(x)
-        })
-    }
+    const interpolated = xArrInter.map(x => ({
+        x,
+        y: lagrangePolynomial(x),
+    }))
 
     let initialFuncPoints = []
     for (let x = a; x < b + epsilon; x += .01) {
-        const y = Math.sin(x - 2) ** 5 + Math.cos(x * 0.1) ** 7
+        const y = initialFunc(x)
         initialFuncPoints.push({x,y})
     }
 
@@ -85,7 +96,7 @@ const Lab1 = () => {
 
     useEffect(() => {
         dispatch(data2Set(initialFuncPoints));
-    }, [initialPoints, xType]);
+    }, [initialFuncPoints, xType]);
     useEffect(() => {
         dispatch(data1Set(interpolated));
     }, [interpolated, xType]);
@@ -94,7 +105,7 @@ const Lab1 = () => {
     }, [deviation, xType]);
     useEffect(() => {
         dispatch(data4Set(initialPoints));
-    }, [deviation, xType]);
+    }, [initialPoints, xType]);
 
     const onXTypeChange = (e) => {
         setXType(e.target.id)

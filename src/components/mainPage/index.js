@@ -23,7 +23,7 @@ const MainPage = () => {
             </div>
             <div className={"col-8"}>
                 <PlotlyChart/>
-                <RechartsChart/>
+                {/*<RechartsChart/>*/}
             </div>
         </div>
 
