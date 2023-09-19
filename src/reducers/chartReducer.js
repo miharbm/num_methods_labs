@@ -5,10 +5,10 @@ const initialState = {
     // dataToChart: [],
     // initialData: [],
     // deviation: []
-    data1: [],
-    data2: [],
-    data3: [],
-    data4: [],
+    data1: {data: [], name: ""},
+    data2: {data: [], name: ""},
+    data3: {data: [], name: ""},
+    data4: {data: [], name: ""},
 }
 
 const chart = createReducer(initialState, {

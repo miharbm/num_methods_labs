@@ -92,19 +92,35 @@ const Lab1 = () => {
         y: Math.abs(y - initialFunc(x)),
     }));
 
+    const maxDeviation = Math.max(...deviation.map(i => i.y))
 
 
     useEffect(() => {
-        dispatch(data2Set(initialFuncPoints));
+        dispatch(data2Set({
+            name: "f(x)",
+            data: initialFuncPoints,
+        }));
     }, [initialFuncPoints, xType]);
+
     useEffect(() => {
-        dispatch(data1Set(interpolated));
+        dispatch(data1Set({
+            name: "lagrange",
+            data: interpolated
+        }));
     }, [interpolated, xType]);
+
     useEffect(() => {
-        dispatch(data3Set(deviation));
+        dispatch(data3Set({
+            name: "deviation",
+            data: deviation
+        }));
     }, [deviation, xType]);
+
     useEffect(() => {
-        dispatch(data4Set(initialPoints));
+        dispatch(data4Set({
+            name: "initial points",
+            data: initialPoints
+        }));
     }, [initialPoints, xType]);
 
     const onXTypeChange = (e) => {
@@ -141,6 +157,9 @@ const Lab1 = () => {
                    style={{textAlign: "center", width: "50px", marginTop: "20px"}}
                    onChange={e => setN(+e.target.value)}
             />
+            <div style={{marginTop: 10}}>
+                Погрешность = {maxDeviation.toFixed(2)}
+            </div>
         </div>
     )
 }

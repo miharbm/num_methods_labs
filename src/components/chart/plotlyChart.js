@@ -3,12 +3,14 @@ import Plot from 'react-plotly.js';
 import {useSelector} from "react-redux";
 
 const PlotlyChart = () =>  {
-    const data1 = useSelector(state => state.chart.data1);
-    const data2 = useSelector(state => state.chart.data2);
-    const data4 = useSelector(state => state.chart.data4);
-    const deviation = useSelector(state => state.chart.data3);
+    const {data : data1, name: name1} = useSelector(state => state.chart.data1);
+    const {data: data2, name: name2} = useSelector(state => state.chart.data2);
+    const {data: data4, name: name4} = useSelector(state => state.chart.data4);
+    const {data: deviation, name: nameDeviation} = useSelector(state => state.chart.data3);
 
-
+    // console.log("data1: ", data1)
+    // console.log("data2: ", data2)
+    // console.log("data4: ", data4)
     const data = [
         {
             x: data1.map(point => point.x),
@@ -16,7 +18,7 @@ const PlotlyChart = () =>  {
             type: 'scatter',
             mode: 'markers',
             marker: {color: 'green'},
-            name: "lagrange",
+            name: name1,
 
         },
         {
@@ -25,7 +27,7 @@ const PlotlyChart = () =>  {
             type: 'scatter',
             mode: 'markers',
             marker: {color: 'blue', size: 3},
-            name: "f(x)",
+            name: name2,
 
         },
         {
@@ -34,7 +36,7 @@ const PlotlyChart = () =>  {
             type: 'scatter',
             mode: 'markers',
             marker: {color: 'purple'},
-            name: "initial points",
+            name: name4,
         },
     ]
 
