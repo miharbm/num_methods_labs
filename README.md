@@ -1,6 +1,8 @@
 # Work with docker
 ## Dockerizing
 ### `docker build -t num-methods-app:latest .`
+You also can download from docker hub
+### `docker pull miharbm/num-methods-app`
 
 ## Run app
 ### `docker run -d -p 3000:80 num-methods-app:latest`
