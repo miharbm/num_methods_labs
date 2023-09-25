@@ -1,7 +1,7 @@
 import {useDispatch} from "react-redux";
 import {useEffect, useState} from "react";
+import {data1Set, data2Set, data3Set, data4Set} from "../../actions";
 import {Form} from "react-bootstrap";
-import {data1Set, data2Set, data4Set} from "../../actions";
 
 const Lab2 = () => {
     const dispatch = useDispatch();
@@ -10,12 +10,30 @@ const Lab2 = () => {
     const start = -3;
     const end = 3;
     const epsilon = 0.0001;
+    const [showFunc, setShowFunc] = useState(false);
+    const [diffType, setDiffType] = useState("rightDiff");
+    const diffTypes = [
+        {id: "rightDiff", label: "Правая разность"},
+        {id: "centralDiff", label: "Центральная разность"},
+        {id: "centralDiffSecOrder2", label: "Центральная разность, вторая производная второго порядка"},
+        {id: "centralDiffSecOrder4", label: "Центральная разность, вторая производная четвертого порядка"}
+    ];
 
 
+    // функция в явном виде
     const func = (x) => {
         return Math.atan(Math.sin(x));
     }
 
+    // первая производная в явном виде
+    const explicitFirstDiffFunc = (x) => {
+        return Math.cos(x) / (1 + Math.sin(x) ** 2);
+    }
+
+    // вторая производная в явном виде
+    const explicitSecondDiffFunc = (x) => {
+        return - (Math.sin(x) ** 3 + Math.sin(x) + 2 * Math.sin(x) * (Math.cos(x) ** 2)) / ((1 + Math.sin(x) ** 2) ** 2)
+    }
 
 
     // правая разность, первая производная
@@ -39,56 +57,156 @@ const Lab2 = () => {
     }
 
     let initialFuncPoints = [];
-    for (let x = start; x < end + epsilon; x += 0.001) {
-        initialFuncPoints.push({
-            x,
-            y: func(x),
-        })
+    if(showFunc) {
+        for (let x = start; x < end + epsilon; x += 0.001) {
+            initialFuncPoints.push({
+                x,
+                y: func(x),
+            })
+        }
     }
 
-    let rightDiffArr = [];
-    for (let x = start; x < end - h; x += h) {
-        rightDiffArr.push({
-            x,
-            y: rightDiff(x)
-        })
+    const diffArr = [];
+    switch (diffType) {
+        default:
+        case "rightDiff":
+            for (let x = start; x < end - h; x += h) {
+                diffArr.push({
+                    x,
+                    y: rightDiff(x)
+                })
+            }
+            break;
+        case "centralDiff":
+            for (let x = start; x < end - h; x += h) {
+                diffArr.push({
+                    x,
+                    y: centralDiff(x)
+                })
+            }
+            break;
+        case "centralDiffSecOrder2":
+            for (let x = start; x < end - h; x += h) {
+                diffArr.push({
+                    x,
+                    y: centralDiffSecOrder2(x)
+                })
+            }
+            break;
+        case "centralDiffSecOrder4":
+            for (let x = start; x < end - h; x += h) {
+                diffArr.push({
+                    x,
+                    y: centralDiffSecOrder4(x)
+                })
+            }
+            break;
     }
 
-    let centralDiffArr = [];
-    for (let x = start + h; x < end - h; x += h) {
-        centralDiffArr.push({
-            x,
-            y: centralDiff(x)
-        })
+    const labelDiffArr =  diffTypes[diffTypes.findIndex(({id}) => id === diffType)].label;
+
+    let deviation = [];
+    let explicitDiffPoints = [];
+    switch (diffType) {
+        default:
+        case "rightDiff":
+        case "centralDiff":
+            deviation = diffArr.map(({x,y}) => ({
+                x,
+                y: Math.abs(y - explicitFirstDiffFunc(x)),
+            }));
+
+            for (let x = start; x < end; x += 0.01) {
+                explicitDiffPoints.push({
+                    x,
+                    y: explicitFirstDiffFunc(x)
+                })
+            }
+            break;
+        case "centralDiffSecOrder2":
+        case "centralDiffSecOrder4":
+            deviation = diffArr.map(({x,y}) => ({
+                x,
+                y: Math.abs(y - explicitSecondDiffFunc(x)),
+            }));
+
+            for (let x = start; x < end; x += 0.01) {
+                explicitDiffPoints.push({
+                    x,
+                    y: explicitSecondDiffFunc(x)
+                })
+            }
+            break;
     }
+
+    const maxDeviation = Math.max(...deviation.map(i => i.y))
+
+
 
     useEffect(() => {
         dispatch(data2Set({
             name: "f(x)",
             data: initialFuncPoints,
         }));
-    }, [initialFuncPoints]);
+    }, [diffType,initialFuncPoints]);
     useEffect(() => {
         dispatch(data1Set({
-            name: "right diff",
-            data: rightDiffArr,
+            name: labelDiffArr,
+            data: diffArr,
         }));
-    }, [rightDiffArr]);
+    }, [diffType, diffArr]);
+    useEffect(() => {
+        dispatch(data3Set({
+            name: "deviation",
+            data: deviation
+        }));
+    }, [deviation, diffType]);
     useEffect(() => {
         dispatch(data4Set({
-            name: "central diff",
-            data: centralDiffArr,
+            name: "Explicit diff",
+            data: explicitDiffPoints
         }));
-    }, [centralDiffArr]);
+    }, [explicitDiffPoints, diffType]);
 
+    const onDiffTypeChange = (e) => {
+        setDiffType(e.target.id)
+    }
+
+    const radioDiffType = () => {
+        return diffTypes.map(({id, label}) => {
+            return <Form.Check
+                style={{marginTop: "15px", backgroundColor: "rgba(225,225,225,0.88)", borderRadius: "5px"}}
+                key={id}
+                type="radio"
+                label={label}
+                id={id}
+                onChange={onDiffTypeChange}
+                checked={diffType === id}
+            />
+        })
+    }
+
+    console.log("show func = ", showFunc)
     document.title = "Lab 2";
     return (
         <div style={{position: "sticky", top: "15px"}}>
             <h2>Lab2</h2>
             <hr style={{marginBottom: "40px"}}/>
-            <label htmlFor={"valueN"} style={{fontSize: "20px", marginRight: "10px"}}>h = </label>
+            <div className="form-check form-switch">
+                <label className="form-check-label" htmlFor="flexCheckDefault">
+                    Показать f(x)
+                </label>
+                <input className="form-check-input" type="checkbox" value='' id="flexCheckDefault" onChange={() => setShowFunc(!showFunc)}/>
+            </div>
+            <Form.Group style={{display: "block", marginTop: "20px"}}>
+                {
+                    radioDiffType()
+                }
+            </Form.Group>
+
+            <label htmlFor={"valueN"} style={{fontSize: "20px", marginRight: "10px", marginTop: 30}}>h = </label>
             <input name={"valueN"} value={h} type="text"
-                   style={{textAlign: "center", width: "50px", marginTop: "20px"}}
+                   style={{textAlign: "center", width: "50px", marginTop: "30px"}}
                    onChange={e => setH(+e.target.value)}
             />
             <input type="range" id="h" name="h"
@@ -96,6 +214,9 @@ const Lab2 = () => {
                    onChange={e => setH(+e.target.value)}
                    style={{display: "block", width: "100%", marginTop: 10}}
             />
+            <div style={{marginTop: 30}}>
+                Погрешность = {maxDeviation.toFixed(2)}
+            </div>
         </div>
     )
 }

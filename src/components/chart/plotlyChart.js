@@ -17,7 +17,7 @@ const PlotlyChart = () =>  {
             y: data1.map(point => point.y),
             type: 'scatter',
             mode: 'markers',
-            marker: {color: 'green'},
+            marker: {color: '#16a34a'},
             name: name1,
 
         },
@@ -26,7 +26,7 @@ const PlotlyChart = () =>  {
             y: data2.map(point => point.y),
             type: 'scatter',
             mode: 'markers',
-            marker: {color: 'blue', size: 3},
+            marker: {color: '#2563eb', size: 3},
             name: name2,
 
         },
@@ -35,7 +35,7 @@ const PlotlyChart = () =>  {
             y: data4.map(point => point.y),
             type: 'scatter',
             mode: 'markers',
-            marker: {color: 'purple'},
+            marker: {color: '#6b21a8'},
             name: name4,
         },
     ]
@@ -72,7 +72,7 @@ const PlotlyChart = () =>  {
                     legend: {
                         x: 1,
                         xanchor: 'right',
-                        y: 1
+                        y: 1.1,
                     },
                     font: {
                         size: 14,
@@ -87,7 +87,7 @@ const PlotlyChart = () =>  {
                     legend: {
                         x: 1,
                         xanchor: 'right',
-                        y: 1
+                        y: 1.07,
                     },
                     font: {
                         size: 14,
