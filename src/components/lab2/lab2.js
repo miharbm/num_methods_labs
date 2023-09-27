@@ -175,7 +175,7 @@ const Lab2 = () => {
     const radioDiffType = () => {
         return diffTypes.map(({id, label}) => {
             return <Form.Check
-                style={{marginTop: "15px", backgroundColor: "rgba(225,225,225,0.88)", borderRadius: "5px"}}
+                style={{marginTop: 12, paddingLeft: 30, backgroundColor: "rgba(225,225,225,0.88)", borderRadius: 8}}
                 key={id}
                 type="radio"
                 label={label}
@@ -186,35 +186,40 @@ const Lab2 = () => {
         })
     }
 
-    console.log("show func = ", showFunc)
     document.title = "Lab 2";
     return (
         <div style={{position: "sticky", top: "15px"}}>
             <h2>Lab2</h2>
+
             <hr style={{marginBottom: "40px"}}/>
-            <div className="form-check form-switch">
-                <label className="form-check-label" htmlFor="flexCheckDefault">
-                    Показать f(x)
-                </label>
-                <input className="form-check-input" type="checkbox" value='' id="flexCheckDefault" onChange={() => setShowFunc(!showFunc)}/>
+
+            <div className="form-check form-switch" style={{backgroundColor: "rgba(133,167,190,0.51)", borderRadius: "8px", paddingLeft: 45}}>
+                <label className="form-check-label" htmlFor="flexCheckDefault" > Показать f(x) </label>
+                <input className="form-check-input" type="checkbox" value='' id="flexCheckDefault"
+                       onChange={() => setShowFunc(!showFunc)}
+                />
             </div>
-            <Form.Group style={{display: "block", marginTop: "20px"}}>
+
+            <Form.Group style={{display: "block", marginTop: 30}}>
                 {
                     radioDiffType()
                 }
             </Form.Group>
 
-            <label htmlFor={"valueN"} style={{fontSize: "20px", marginRight: "10px", marginTop: 30}}>h = </label>
-            <input name={"valueN"} value={h} type="text"
-                   style={{textAlign: "center", width: "50px", marginTop: "30px"}}
-                   onChange={e => setH(+e.target.value)}
-            />
-            <input type="range" id="h" name="h"
-                   min="0.01" max="1" value={h} step={0.01}
-                   onChange={e => setH(+e.target.value)}
-                   style={{display: "block", width: "100%", marginTop: 10}}
-            />
-            <div style={{marginTop: 30}}>
+            <div style={{backgroundColor: "rgba(133,167,190,0.51)", borderRadius: "8px", marginTop: 30, padding: 5}}>
+                <label htmlFor={"valueN"} style={{fontSize: "20px", margin: "5px 10px 0px 5px"  }}>h = </label>
+                <input name={"valueN"} value={h} type="text"
+                       style={{textAlign: "center", width: "50px", borderRadius: "8px"}}
+                       onChange={e => setH(+e.target.value)}
+                />
+                <input type="range" id="h" name="h"
+                       min="0.01" max="1" value={h} step={0.01}
+                       onChange={e => setH(+e.target.value)}
+                       style={{display: "block", width: "100%", marginTop: 10, marginBottom: 10}}
+                />
+            </div>
+
+            <div style={{marginTop: 30, backgroundColor: "rgba(255,23,23,0.32)", borderRadius: 8, paddingLeft: 10}}>
                 Погрешность = {maxDeviation.toFixed(2)}
             </div>
         </div>
