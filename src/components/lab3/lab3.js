@@ -37,6 +37,7 @@ const Lab3 = () => {
     const rectangleIntegral = (type) => {
         let square = 0;
         let additive;
+
         switch (type) {
             case "left" :
                 additive = 0;
@@ -50,7 +51,8 @@ const Lab3 = () => {
             default:
                 additive = 0;
         }
-        for (let x = start; x < end; x += h) {
+
+        for (let x = start; x < end + epsilon; x += h) {
             square += h * func(x + additive)
         }
 
@@ -90,55 +92,44 @@ const Lab3 = () => {
 
     const numIntegral = explicitIntegral(end) - explicitIntegral(start);
 
-    const deviation = [];
+    const deviationFromStep = ( integral, typeRectangleIntegral = null) => {
+        const deviation = [];
+
+        for (let n  = 5; n  < 200; n += 1) {
+            h = (end - start) / n;
+            deviation.push({
+                x: h,
+                y: Math.abs(integral(typeRectangleIntegral) -  numIntegral)
+            })
+        }
+
+        return deviation;
+    }
+
+    const hProps = {
+        startH: 0.001,
+        endH: 1,
+        stepH: 0.001
+    }
+
+    let deviation = [];
     switch (integralType) {
         default:
         case "rectangleLeft":
-            for (let _h = 0.01; _h < 0.1; _h += 0.01) {
-                h = _h;
-                deviation.push({
-                    x: h,
-                    y: Math.abs(rectangleIntegral("left") - numIntegral)
-                })
-            }
+            deviation = deviationFromStep(rectangleIntegral, "left")
             break;
         case "rectangleRight":
-            for (let _h = 0.01; _h < 0.1; _h += 0.01) {
-                h = _h;
-                deviation.push({
-                    x: h,
-                    y: Math.abs(rectangleIntegral("right") - numIntegral)
-                })
-            }
+            deviation = deviationFromStep(rectangleIntegral, "right")
             break;
         case "rectangleCentral":
-            for (let _h = 0.01; _h < 0.1; _h += 0.01) {
-                h = _h;
-                deviation.push({
-                    x: h,
-                    y: Math.abs(rectangleIntegral("central") - numIntegral)
-                })
-            }
+            deviation = deviationFromStep(rectangleIntegral, "central")
             break;
         case "trapezoid":
-            for (let _h = 0.01; _h < 0.1; _h += 0.01) {
-                h = _h;
-                deviation.push({
-                    x: h,
-                    y: Math.abs(trapezoidIntegral() - numIntegral)
-                })
-            }
+            deviation = deviationFromStep(trapezoidIntegral)
             break;
         case "simpson":
-            for (let _h = 0.01; _h < 0.1; _h += 0.01) {
-                h = _h;
-                deviation.push({
-                    x: h,
-                    y: Math.abs(simpsonIntegral() - numIntegral)
-                })
-            }
+            deviation = deviationFromStep(simpsonIntegral)
             break;
-
     }
 
     const labelIntegral =  integralTypes[integralTypes.findIndex(({id}) => id === integralType)].label;
