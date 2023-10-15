@@ -6,7 +6,7 @@ import {Form} from "react-bootstrap";
 const Lab2 = () => {
     const dispatch = useDispatch();
 
-    const [h, setH] = useState(0.3);
+  const [h, setH] = useState(0.2);
     const start = -3;
     const end = 3;
     const epsilon = 0.0001;
@@ -142,7 +142,6 @@ const Lab2 = () => {
     const maxDeviation = Math.max(...deviation.map(i => i.y))
 
 
-
     useEffect(() => {
         dispatch(data2Set({
             name: "f(x)",
@@ -213,14 +212,14 @@ const Lab2 = () => {
                        onChange={e => setH(+e.target.value)}
                 />
                 <input type="range" id="h" name="h"
-                       min="0.01" max="1" value={h} step={0.01}
+                       min="0.001" max="1" value={h} step={0.001}
                        onChange={e => setH(+e.target.value)}
                        style={{display: "block", width: "100%", marginTop: 10, marginBottom: 10}}
                 />
             </div>
 
             <div style={{marginTop: 30, backgroundColor: "rgba(255,23,23,0.32)", borderRadius: 8, paddingLeft: 10}}>
-                Погрешность = {maxDeviation.toFixed(2)}
+                Погрешность = {maxDeviation.toFixed(4)}
             </div>
         </div>
     )
