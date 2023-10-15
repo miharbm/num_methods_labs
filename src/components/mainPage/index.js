@@ -1,8 +1,8 @@
 import {useParams} from "react-router-dom";
 import Lab1 from "../lab1/lab1";
 import PlotlyChart from "../chart/plotlyChart";
-import RechartsChart from "../chart/RechartsChart";
 import Lab2 from "../lab2/lab2";
+import Lab3 from "../lab3/lab3";
 
 const MainPage = () => {
 
@@ -14,6 +14,8 @@ const MainPage = () => {
                 return <Lab1/>;
             case 2:
                 return <Lab2/>;
+            case 3:
+                return <Lab3/>;
             default :
                 return "SELECT LAB";
         }
