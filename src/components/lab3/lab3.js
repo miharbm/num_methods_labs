@@ -9,9 +9,11 @@ const Lab3 = () => {
 
     // const [h, setH] = useState(0.2);
     let h = epsilon;
+
     const start = -1;
     const end = 1;
     const [showFunc, setShowFunc] = useState(false);
+    const [logCoordinates, setLogCoordinates] = useState(false);
     const [integralType, setIntegralType] = useState("rectangleLeft");
     const integralTypes = [
         {id: "rectangleLeft", label: "Прямоугольник левый"},
@@ -97,20 +99,23 @@ const Lab3 = () => {
 
         for (let n  = 5; n  < 200; n += 1) {
             h = (end - start) / n;
-            deviation.push({
-                x: h,
-                y: Math.abs(integral(typeRectangleIntegral) -  numIntegral)
-            })
+            if (logCoordinates) {
+                deviation.push({
+                    x: Math.log(h),
+                    y: Math.log(Math.abs(integral(typeRectangleIntegral) -  numIntegral))
+                })
+            } else {
+                deviation.push({
+                    x: h,
+                    y: Math.abs(integral(typeRectangleIntegral) -  numIntegral)
+                })
+            }
+
         }
 
         return deviation;
     }
 
-    const hProps = {
-        startH: 0.001,
-        endH: 1,
-        stepH: 0.001
-    }
 
     let deviation = [];
     switch (integralType) {
@@ -134,7 +139,9 @@ const Lab3 = () => {
 
     const labelIntegral =  integralTypes[integralTypes.findIndex(({id}) => id === integralType)].label;
 
-
+    const tga = (arr) => {
+        return (arr.at(-1).y - arr.at(1).y) / (arr.at(-1).x - arr.at(1).x);
+    }
 
     useEffect(() => {
         dispatch(data1Set({
@@ -179,6 +186,16 @@ const Lab3 = () => {
         })
     }
 
+    const showTga = (tga) => {
+        if (!logCoordinates)
+            return null
+        return (
+            <div style={{marginTop: 15, backgroundColor: "rgba(225,225,225,0.88)", borderRadius: 8, paddingLeft: 10}}>
+                Угол наклона = {tga.toFixed(4)}
+            </div>
+        )
+    }
+
     document.title = "Lab 3";
     return (
         <div style={{position: "sticky", top: "15px"}}>
@@ -199,14 +216,14 @@ const Lab3 = () => {
                 }
             </Form.Group>
 
-            {/*<div>*/}
-            {/*    Аналитический интеграл =*/}
-            {/*    {numIntegral}*/}
-            {/*</div>*/}
-            {/*<div>*/}
-            {/*    прямоугольники =*/}
-            {/*    {rectangleIntegral()}*/}
-            {/*</div>*/}
+            <div className="form-check form-switch" style={{backgroundColor: "rgba(133,167,190,0.51)", borderRadius: "8px", paddingLeft: 45, marginTop: 40}}>
+                <label className="form-check-label" htmlFor="flexCheckDefaultLog" > Логарифмические координаты </label>
+                <input className="form-check-input" type="checkbox" value='' id="flexCheckDefaultLog"
+                       onChange={() => setLogCoordinates(!logCoordinates)}
+                />
+            </div>
+
+            {showTga(tga(deviation))}
 
 
         </div>
