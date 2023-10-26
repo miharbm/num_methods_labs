@@ -19,6 +19,10 @@ const AppHeader = () => {
             label: "Lab3",
             id: 3
         },
+        {
+            label: "Lab4",
+            id: 4
+        },
 
     ]
 

@@ -3,6 +3,7 @@ import Lab1 from "../lab1/lab1";
 import PlotlyChart from "../chart/plotlyChart";
 import Lab2 from "../lab2/lab2";
 import Lab3 from "../lab3/lab3";
+import Lab4 from "../lab4/lab4";
 
 const MainPage = () => {
 
@@ -16,6 +17,8 @@ const MainPage = () => {
                 return <Lab2/>;
             case 3:
                 return <Lab3/>;
+            case 4:
+                return <Lab4/>;
             default :
                 return "SELECT LAB";
         }
