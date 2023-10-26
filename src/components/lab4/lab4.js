@@ -2,13 +2,14 @@ import {useDispatch} from "react-redux";
 import {useEffect, useState} from "react";
 import {data1Set, data4Set} from "../../actions";
 import CheckBox from "../util/CheckBox";
+import "./lab4.scss"
 
 const Lab4 = () => {
     const dispatch = useDispatch();
 
-    const epsilon3 = 10e-3;
-    const epsilon6 = 10e-6;
-    const epsilon9 = 10e-9;
+    const epsilon3 = 1e-3;
+    const epsilon6 = 1e-6;
+    const epsilon9 = 1e-9;
 
     const start = 0;
     const end = 10;
@@ -51,6 +52,7 @@ const Lab4 = () => {
         return xNext;
     }
 
+    console.log("epsilon9", epsilon9)
 
     console.log("end = ", dichotomy(start, end, epsilon9))
     console.log("end = ", dichotomy(start, end, epsilon6))
@@ -115,7 +117,36 @@ const Lab4 = () => {
 
             <CheckBox value={showFunc} setFunc={setShowFunc} text={"Показать f(x)"}/>
 
-
+            <div className={"results"}>
+                <h3>Метод Дихотомии</h3>
+                <div className={"results__item"}>
+                    <div className={"results__item__precision"}>Точность = {epsilon3}</div>
+                    <div className={"results__item__root"}>x = {dichotomy(start, end, epsilon3)}</div>
+                </div>
+                <div className={"results__item"}>
+                    <div className={"results__item__precision"}>Точность = {epsilon6}</div>
+                    <div className={"results__item__root"}>x = {dichotomy(start, end, epsilon6)}</div>
+                </div>
+                <div className={"results__item"}>
+                    <div className={"results__item__precision"}>Точность = {epsilon9}</div>
+                    <div className={"results__item__root"}>x = {dichotomy(start, end, epsilon9)}</div>
+                </div>
+            </div>
+            <div className={"results"}>
+                <h3>Метод Ньютона</h3>
+                <div className={"results__item"}>
+                    <div className={"results__item__precision"}>Точность = {epsilon3}</div>
+                    <div className={"results__item__root"}>x = {newton((end - start) / 2, epsilon3)}</div>
+                </div>
+                <div className={"results__item"}>
+                    <div className={"results__item__precision"}>Точность = {epsilon6}</div>
+                    <div className={"results__item__root"}>x = {newton((end - start) / 2, epsilon6)}</div>
+                </div>
+                <div className={"results__item"}>
+                    <div className={"results__item__precision"}>Точность = {epsilon9}</div>
+                    <div className={"results__item__root"}>x = {newton((end - start) / 2, epsilon9)}</div>
+                </div>
+            </div>
 
 
         </div>

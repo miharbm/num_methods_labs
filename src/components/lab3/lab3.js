@@ -212,7 +212,7 @@ const Lab3 = () => {
                 }
             </Form.Group>
 
-            <CheckBox value={logCoordinates} setFunc={setLogCoordinates} text={"Логарифмические координаты"}/>
+            <CheckBox value={logCoordinates} setFunc={setLogCoordinates} text={"Логарифмические координаты"} style={{marginTop: 30}}/>
 
             {showTga(tga(deviation))}
 
