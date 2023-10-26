@@ -2,6 +2,7 @@ import {useDispatch} from "react-redux";
 import {useEffect, useState} from "react";
 import {data1Set, data2Set, data3Set, data4Set} from "../../actions";
 import {Form} from "react-bootstrap";
+import CheckBox from "../util/CheckBox";
 
 const Lab3 = () => {
     const dispatch = useDispatch();
@@ -203,12 +204,7 @@ const Lab3 = () => {
 
             <hr style={{marginBottom: "40px"}}/>
 
-            <div className="form-check form-switch" style={{backgroundColor: "rgba(133,167,190,0.51)", borderRadius: "8px", paddingLeft: 45}}>
-                <label className="form-check-label" htmlFor="flexCheckDefault" > Показать f(x) </label>
-                <input className="form-check-input" type="checkbox" value='' id="flexCheckDefault"
-                       onChange={() => setShowFunc(!showFunc)}
-                />
-            </div>
+            <CheckBox value={showFunc} setFunc={setShowFunc} text={"Показать f(x)"}/>
 
             <Form.Group style={{display: "block", marginTop: 30}}>
                 {
@@ -216,12 +212,7 @@ const Lab3 = () => {
                 }
             </Form.Group>
 
-            <div className="form-check form-switch" style={{backgroundColor: "rgba(133,167,190,0.51)", borderRadius: "8px", paddingLeft: 45, marginTop: 40}}>
-                <label className="form-check-label" htmlFor="flexCheckDefaultLog" > Логарифмические координаты </label>
-                <input className="form-check-input" type="checkbox" value='' id="flexCheckDefaultLog"
-                       onChange={() => setLogCoordinates(!logCoordinates)}
-                />
-            </div>
+            <CheckBox value={logCoordinates} setFunc={setLogCoordinates} text={"Логарифмические координаты"}/>
 
             {showTga(tga(deviation))}
 
