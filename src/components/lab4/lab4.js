@@ -25,6 +25,7 @@ const Lab4 = () => {
         return 0.5 * Math.exp(Math.sin(x / 2)) *  Math.cos(x / 2)  - 1 / (1 + x**2);
     }
 
+    let iteration = 0;
     const dichotomy = (xLeft, xRight, epsilon) => {
         let xMiddle = 0.5 * (xRight + xLeft);
         if (xRight - xLeft > epsilon && Math.abs(func(xMiddle)) > epsilon) {
@@ -35,39 +36,27 @@ const Lab4 = () => {
                 xMiddle = dichotomy(xMiddle, xRight, epsilon);
             }
         }
-        // console.log(xMiddle)
+        iteration ++;
         return xMiddle;
     }
 
     const newton = (x, epsilon) => {
+        iteration = 0;
         let xNext;
         while (true) {
             xNext = x - func(x) / derivativeFunc(x);
             if (Math.abs(xNext - x) < epsilon && Math.abs(func(xNext)) < epsilon) {
                 break;
             }
-            console.log(xNext)
             x = xNext;
+            iteration++;
         }
         return xNext;
     }
 
-    console.log("epsilon9", epsilon9)
-
-    console.log("end = ", dichotomy(start, end, epsilon9))
-    console.log("end = ", dichotomy(start, end, epsilon6))
-    console.log("end = ", dichotomy(start, end, epsilon3))
-
-    console.log("end = ", newton((end - start) / 2, epsilon9))
-    console.log("end = ", newton((end - start) / 2, epsilon6))
-    console.log("end = ", newton((end - start) / 2, epsilon3))
-
-
-
-
     let initialFuncPoints = [];
     if (showFunc) {
-        for (let x = start; x < end + epsilon3; x += 0.001) {
+        for (let x = start; x < end + epsilon3; x += epsilon3) {
             initialFuncPoints.push({
                 x,
                 y: func(x),
@@ -75,7 +64,18 @@ const Lab4 = () => {
         }
     }
 
+    const rootsDichotomy = [];
+    iteration = 0;
+    rootsDichotomy.push({precision: epsilon3, root: dichotomy(start, end, epsilon3), iterations: iteration})
+    iteration = 0;
+    rootsDichotomy.push({precision: epsilon6, root: dichotomy(start, end, epsilon6), iterations: iteration})
+    iteration = 0;
+    rootsDichotomy.push({precision: epsilon9, root: dichotomy(start, end, epsilon9), iterations: iteration});
 
+    const rootsNewton = [];
+    rootsNewton.push({precision: epsilon3, root: newton(dichotomy(start, end, epsilon3), epsilon3), iterations: iteration})
+    rootsNewton.push({precision: epsilon6, root: newton(dichotomy(start, end, epsilon3), epsilon6), iterations: iteration})
+    rootsNewton.push({precision: epsilon9, root: newton(dichotomy(start, end, epsilon3), epsilon9), iterations: iteration});
 
 
 
@@ -117,38 +117,35 @@ const Lab4 = () => {
 
             <CheckBox value={showFunc} setFunc={setShowFunc} text={"Показать f(x)"}/>
 
-            <div className={"results"}>
-                <h3>Метод Дихотомии</h3>
-                <div className={"results__item"}>
-                    <div className={"results__item__precision"}>Точность = {epsilon3}</div>
-                    <div className={"results__item__root"}>x = {dichotomy(start, end, epsilon3)}</div>
-                </div>
-                <div className={"results__item"}>
-                    <div className={"results__item__precision"}>Точность = {epsilon6}</div>
-                    <div className={"results__item__root"}>x = {dichotomy(start, end, epsilon6)}</div>
-                </div>
-                <div className={"results__item"}>
-                    <div className={"results__item__precision"}>Точность = {epsilon9}</div>
-                    <div className={"results__item__root"}>x = {dichotomy(start, end, epsilon9)}</div>
-                </div>
-            </div>
-            <div className={"results"}>
-                <h3>Метод Ньютона</h3>
-                <div className={"results__item"}>
-                    <div className={"results__item__precision"}>Точность = {epsilon3}</div>
-                    <div className={"results__item__root"}>x = {newton((end - start) / 2, epsilon3)}</div>
-                </div>
-                <div className={"results__item"}>
-                    <div className={"results__item__precision"}>Точность = {epsilon6}</div>
-                    <div className={"results__item__root"}>x = {newton((end - start) / 2, epsilon6)}</div>
-                </div>
-                <div className={"results__item"}>
-                    <div className={"results__item__precision"}>Точность = {epsilon9}</div>
-                    <div className={"results__item__root"}>x = {newton((end - start) / 2, epsilon9)}</div>
-                </div>
-            </div>
+            <Results methodName={"Метод Дихотомии"} roots={rootsDichotomy}/>
+            <Results methodName={"Метод Ньютона"} roots={rootsNewton}/>
 
+        </div>
+    )
+}
 
+const Results = ({methodName, roots}) => {
+    return (
+        <div className={"results"}>
+            <h3>{methodName}</h3>
+            {roots.map(({precision,root, iterations}, i) => (
+                <ResultItem key={i}
+                            precision={precision}
+                            root={root}
+                            iterations={iterations}/>
+            ))}
+        </div>
+    )
+}
+
+const ResultItem = ({precision, root, iterations}) => {
+    return (
+        <div className={"results__item"}>
+            <div className={"results__item__precision"}>Точность = {precision}</div>
+            <div className={"results__item__result"}>
+                <div className="results__item__root">x = {root}</div>
+                <div className="results__item__iterations">Кол-во итераций = {iterations}</div>
+            </div>
         </div>
     )
 }

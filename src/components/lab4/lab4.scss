@@ -5,9 +5,7 @@
     border-radius: 8px;
     padding: 10px 15px;
     h3 {
-        width: 200px;
-        display: block;
-        margin: 0 auto 15px;
+        text-align: center;
         font-size: 20px;
 
     }
@@ -18,7 +16,7 @@
         &__precision {
             width: 48%;
         }
-        &__root {
+        &__result {
             width: 48%;
 
         }
