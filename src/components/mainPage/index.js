@@ -4,6 +4,7 @@ import PlotlyChart from "../chart/plotlyChart";
 import Lab2 from "../lab2/lab2";
 import Lab3 from "../lab3/lab3";
 import Lab4 from "../lab4/lab4";
+import Lab5 from "../lab5/lab5";
 
 const MainPage = () => {
 
@@ -19,6 +20,8 @@ const MainPage = () => {
                 return <Lab3/>;
             case 4:
                 return <Lab4/>;
+            case 5:
+                return <Lab5/>;
             default :
                 return "SELECT LAB";
         }
