@@ -51,11 +51,8 @@ const Lab5 = () => {
             })
         }
 
-        arr[0] = {
-            x: arr[0].x,
-            v: v0,
-            u: u0
-        };
+        arr[0].u = u0;
+        arr[0].v = v0;
 
         for (let i = 0; i < arr.length - 1; i++) {
             arr[i + 1].u = arr[i].u + h * dUdX(arr[i]);
@@ -65,32 +62,87 @@ const Lab5 = () => {
         return arr;
     }
 
+    const rungeKutta4 = (h, u0, v0) => {
+        const arr = [];
+        for (let x = start; x < end + epsilon; x += h) {
+            arr.push({
+                x,
+                v: null,
+                u: null
+            })
+        }
+
+        arr[0].u = u0;
+        arr[0].v = v0;
+
+        let k11, k12, k13, k14, k21, k22, k23, k24;
+        for (let i = 0; i < arr.length - 1; i++) {
+            k11 =dUdX(arr[i]);
+            k21 = dVdX(arr[i]);
+
+            k12 = dUdX({
+                x: arr[i].x + h / 2,
+                u: arr[i].u + h / 2 * k11,
+                v: arr[i].v + h / 2 * k21});
+            k22 = dVdX({
+                x: arr[i].x + h / 2,
+                u: arr[i].u + h / 2 * k11,
+                v: arr[i].v + h / 2 * k21});
+
+            k13 = dUdX({
+                x: arr[i].x + h / 2,
+                u: arr[i].u + h / 2 * k12,
+                v: arr[i].v + h / 2 * k22});
+            k23 = dVdX({
+                x: arr[i].x + h / 2,
+                u: arr[i].u + h / 2 * k12,
+                v: arr[i].v + h / 2 * k22});
+
+            k14 = dUdX({
+                x: arr[i].x + h,
+                u: arr[i].u + h * k13,
+                v: arr[i].v + h * k23});
+            k24 = dVdX({
+                x: arr[i].x + h,
+                u: arr[i].u + h * k13,
+                v: arr[i].v + h * k23});
+
+            arr[i + 1].u = arr[i].u + h / 6 * (k11 + 2 * k12 + 2 * k13 + k14);
+            arr[i + 1].v = arr[i].v + h / 6 * (k21 + 2 * k22 + 2 * k23 + k24);
+        }
+
+        return arr;
+    };
+
 
     let solution = [];
-    switch (solutionTypes) {
+    switch (solutionType) {
         default:
         case "eulerMethod":
-            solution = euler(h05, uFrom0, vFrom0).map(({x, u}) => ({x, y: u}))
+            solution = euler(h05, uFrom0, vFrom0).map(({x, u}) => ({x, y: u}));
             break;
         case "rungeKuttaMethod":
+            solution = rungeKutta4(h05, uFrom0, vFrom0).map(({x, u}) => ({x, y: u}));
             break;
         case "adamsMethod":
             break;
     }
 
+    const label = solutionTypes[solutionTypes.findIndex(({id}) => id === solutionType)].label;
+
     useEffect(() => {
         dispatch(data1Set({
-            name: "Метод Эйлера",
+            name: label,
             data: solution,
         }));
-    }, []);
+    }, [solutionType, solution]);
 
     useEffect(() => {
         dispatch(data2Set({
             name: "Аналитическое решение",
             data: explicitUArr
         }));
-    }, []);
+    }, [dispatch, explicitUArr]);
 
     return (
         <div style={{position: "sticky", top: "15px"}}>
