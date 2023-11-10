@@ -1,6 +1,6 @@
 import {useDispatch} from "react-redux";
 import {useEffect, useState} from "react";
-import {data1Set, data4Set} from "../../actions";
+import {clearData, data1Set, data4Set} from "../../actions";
 import CheckBox from "../util/CheckBox";
 import "./lab4.scss"
 
@@ -79,7 +79,9 @@ const Lab4 = () => {
 
 
 
-
+    useEffect(() => {
+        dispatch(clearData())
+    }, [dispatch]);
 
     // useEffect(() => {
     //     dispatch(data1Set({

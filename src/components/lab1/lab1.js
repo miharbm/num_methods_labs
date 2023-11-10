@@ -1,5 +1,5 @@
 import {useDispatch} from "react-redux";
-import {data1Set, data2Set, data3Set, data4Set} from "../../actions";
+import {clearData, data1Set, data2Set, data3Set, data4Set} from "../../actions";
 import {useEffect, useState} from "react";
 import {Form} from "react-bootstrap";
 
@@ -94,6 +94,9 @@ const Lab1 = () => {
 
     const maxDeviation = Math.max(...deviation.map(i => i.y))
 
+    useEffect(() => {
+        dispatch(clearData())
+    }, [dispatch]);
 
     useEffect(() => {
         dispatch(data2Set({

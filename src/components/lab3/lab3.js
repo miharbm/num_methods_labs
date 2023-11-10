@@ -1,6 +1,6 @@
 import {useDispatch} from "react-redux";
 import {useEffect, useState} from "react";
-import {data1Set, data2Set, data3Set, data4Set} from "../../actions";
+import {clearData, data1Set, data2Set, data3Set, data4Set} from "../../actions";
 import {Form} from "react-bootstrap";
 import CheckBox from "../util/CheckBox";
 
@@ -143,6 +143,10 @@ const Lab3 = () => {
     const tga = (arr) => {
         return (arr.at(-1).y - arr.at(1).y) / (arr.at(-1).x - arr.at(1).x);
     }
+
+    useEffect(() => {
+        dispatch(clearData())
+    }, [dispatch]);
 
     useEffect(() => {
         dispatch(data1Set({

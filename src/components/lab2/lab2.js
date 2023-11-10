@@ -1,12 +1,12 @@
 import {useDispatch} from "react-redux";
 import {useEffect, useState} from "react";
-import {data1Set, data2Set, data3Set, data4Set} from "../../actions";
+import {clearData, data1Set, data2Set, data3Set, data4Set} from "../../actions";
 import {Form} from "react-bootstrap";
 
 const Lab2 = () => {
     const dispatch = useDispatch();
 
-  const [h, setH] = useState(0.2);
+    const [h, setH] = useState(0.2);
     const start = -3;
     const end = 3;
     const epsilon = 0.0001;
@@ -141,6 +141,9 @@ const Lab2 = () => {
 
     const maxDeviation = Math.max(...deviation.map(i => i.y))
 
+    useEffect(() => {
+        dispatch(clearData())
+    }, [dispatch]);
 
     useEffect(() => {
         dispatch(data2Set({

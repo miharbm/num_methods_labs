@@ -1,5 +1,5 @@
 import {useEffect, useMemo, useState} from "react";
-import {data1Set, data2Set, data3Set, data4Set} from "../../actions";
+import {clearData, data1Set, data2Set, data3Set, data4Set} from "../../actions";
 import {useDispatch} from "react-redux";
 import Radio from "../util/Radio";
 import CheckBox from "../util/CheckBox";
@@ -199,6 +199,9 @@ const Lab5 = () => {
             }))
     };
 
+    useEffect(() => {
+        dispatch(clearData())
+    }, [dispatch]);
 
     useEffect(() => {
         dispatch(data1Set({
