@@ -56,15 +56,12 @@ const Lab5 = () => {
         return arr;
     }
 
-    const euler = (h, u0, v0) => {
-        const arr = [];
-        for (let x = start; x < end + epsilon; x += h) {
-            arr.push({
-                x,
-                v: null,
-                u: null
-            })
-        }
+    const euler = (xArr, h, u0, v0) => {
+        const arr = xArr.map(x => ({
+            x,
+            v: null,
+            u: null
+        }));
 
         arr[0].u = u0;
         arr[0].v = v0;
@@ -152,7 +149,16 @@ const Lab5 = () => {
 
 
         return arr.slice(2);
-        // return arr;
+    }
+
+    const ruleRunge = () => {
+        const s1 = rungeKutta4(getXArr(start, end, h05), h05, uFrom0, vFrom0)
+            .map(({x, u}) => ({x, y: u}));
+
+        const s2 = rungeKutta4(getXArr(start, end, h1), h1, uFrom0, vFrom0)
+            .map(({x, u}) => ({x, y: u}));
+
+        return  s2.map(({x, y}, i) => ({x, y: Math.abs(y - s1[2 * i].y) / 15}))
     }
 
 
@@ -160,7 +166,7 @@ const Lab5 = () => {
     switch (solutionType) {
         default:
         case "eulerMethod":
-            solution = euler(h05, uFrom0, vFrom0).map(({x, u}) => ({x, y: u}));
+            solution = euler(getXArr(start, end, h05), h05, uFrom0, vFrom0).map(({x, u}) => ({x, y: u}));
             break;
         case "rungeKuttaMethod":
             solution = rungeKutta4(getXArr(start, end, h05), h05, uFrom0, vFrom0)
@@ -171,14 +177,10 @@ const Lab5 = () => {
                 .map(({x, u}) => ({x, y: u}));
             break;
         case "ruleRunge":
-            if (showFunc === true) {
+            if (showFunc === true)
                 setShowFunc(false)
-            }
-            const s1 = rungeKutta4(getXArr(start, end, h05), h05, uFrom0, vFrom0)
-                .map(({x, u}) => ({x, y: u}));
-            const s2 = rungeKutta4(getXArr(start, end, h1), h1, uFrom0, vFrom0)
-                .map(({x, u}) => ({x, y: u}));
-            solution = s2.map(({x, y}, i) => ({x, y: Math.abs(y - s1[2 * i].y) / 15}))
+
+            solution = ruleRunge();
             break;
     }
 
@@ -196,6 +198,8 @@ const Lab5 = () => {
                 y: Math.abs(u - u0Func(x)),
             }))
     };
+
+
     useEffect(() => {
         dispatch(data1Set({
             name: label,
